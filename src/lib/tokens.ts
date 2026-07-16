@@ -1,0 +1,18 @@
+export const T = {
+  bg: "#F1F3EF",
+  panel: "#FFFFFF",
+  ink: "#212A26",
+  inkSoft: "#5B675F",
+  line: "#DDE2DB",
+  danger: "#B3402F",
+  dangerBg: "#F9E9E5",
+  warn: "#9A6A1B",
+  warnBg: "#FFF4E0",
+  ok: "#3A7D5D",
+  okBg: "#E7F2EC",
+  offBg: "#EFEAF7",
+  offInk: "#5B4B8A",
+  trainEdge: "#2E7D6B",
+  trainBg: "#E1F1EC",
+  trainInk: "#1C5A4C",
+} as const;
