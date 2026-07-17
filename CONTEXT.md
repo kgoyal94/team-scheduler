@@ -42,21 +42,22 @@ Long-term goal: productize for independent cafés/restaurants. See `STRATEGY.md`
 - [x] Phase 2: Supabase persistence + magic-link auth (commit c991d29). Type-checks clean;
       full build to be verified by Vercel (local `next build` avoided — disk-constrained here).
 - [x] **Deployed to Vercel** — project `team-scheduler` under team **reborn-industries-llc**
-      (projectId `prj_TeZW1Gz4K3hBUzgRLXJ0w8WC2MDW`). Prod alias:
-      **https://team-scheduler-kappa.vercel.app**. Cloud build passed (55s). Env vars set for
-      production/preview/development. Deployed via CLI (`vercel --prod`) — **not** Git-connected
-      yet (Vercel's GitHub app can't access Alex's private repo; auto-deploy-on-push unlocks
-      after the repo transfers to Reborn). Verified: `/` → 307 → `/login` (200); auth callback
-      does PKCE `exchangeCodeForSession`.
-- [ ] **Supabase Auth URL config (manual, dashboard)** — set Site URL + redirect allow-list to
-      the Vercel domain so magic-link works. Until then, login emails redirect to a disallowed
-      URL. See auth/url-configuration for project `ufpuxvfxgnjwavysbrgm`.
+      (projectId `prj_TeZW1Gz4K3hBUzgRLXJ0w8WC2MDW`). **Live production domain:
+      https://shiftlift.app** (custom domain, registered third-party, added to the project).
+      Cloud build passes; env vars set for production/preview/development. Deployed via CLI
+      (`vercel --prod`) — **not** Git-connected yet (Vercel's GitHub app can't access Alex's
+      private repo; auto-deploy-on-push unlocks after the repo transfers to Reborn).
+- [x] **Name/domain decided: ShiftLift → https://shiftlift.app** (live). App rebranded from
+      "Shift Board" to ShiftLift; demo data genericized (no real the design partner PII).
+- [ ] **Supabase Auth URL config (manual, dashboard)** — needed for magic-link. Set
+      Site URL = `https://shiftlift.app`; redirect allow-list = `https://shiftlift.app/**` and
+      `http://localhost:3000/**`. Project `ufpuxvfxgnjwavysbrgm` → Authentication → URL config.
 - [ ] Runtime-verify the live app: magic-link login → first-run bootstrap seeds the design partner
       → schedule persists across refresh.
 - [ ] Security: magic-link currently accepts ANY email + RLS is "authenticated = full access",
       so any sign-in sees the one business. Restrict allowed emails before real customer data.
-- [ ] Naming/domain decision (ShiftLift-on-`useshiftlift.com` vs. hunt for clean `.com`+`.app`).
-- [ ] Repo ownership: transfer `lawalex/team-scheduler` → Reborn org (Alex as admin).
+- [ ] Repo ownership: transfer `lawalex/team-scheduler` → Reborn org (Alex as admin) — also
+      unlocks Vercel Git auto-deploy.
 - [ ] Validate unmet-need #6 (open/close/keyhold certification) with the CC manager.
 
 ## ⚠️ Environment note (this Mac)
