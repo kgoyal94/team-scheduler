@@ -2,7 +2,7 @@
  * First-run bootstrap (Phase 2).
  *
  * If the DB has no business row yet, this module:
- *  1. Creates the "the design partner" business with defaultSettings.
+ *  1. Creates the default business with defaultSettings.
  *  2. Inserts the seed employees (from seed.ts), resolving their time_off.
  *  3. Inserts the seed shifts, remapping the seed string empIds (e1, e2…)
  *     to the real UUIDs returned by the DB.
@@ -23,7 +23,7 @@ export async function ensureBootstrapped(): Promise<string> {
   if (existing) return existing;
 
   // 1. Create the business.
-  const businessId = await createBusiness("the design partner", defaultSettings);
+  const businessId = await createBusiness("My Business", defaultSettings);
   if (!businessId) {
     throw new Error("[bootstrap] Failed to create business row");
   }

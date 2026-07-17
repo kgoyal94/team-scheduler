@@ -40,9 +40,10 @@ export const defaultSettings: Settings = {
   ],
 };
 
+// Generic demo staff — placeholder people so a new account isn't blank. No real PII.
 export const seedEmployees: Employee[] = [
   {
-    id: "e1", name: "Sam", phone: "(555) 555-0101", color: DEFAULT_EMP_COLORS[0],
+    id: "e1", name: "Sam", phone: "(555) 100-0001", color: DEFAULT_EMP_COLORS[0],
     minHours: 35, maxHours: 40, flex: 2, canOpen: true, canClose: true,
     availability: [true, true, true, true, true, true, true],
     timeOff: [
@@ -52,25 +53,25 @@ export const seedEmployees: Employee[] = [
     ],
   },
   {
-    id: "e2", name: "Jordan", phone: "(555) 555-0102", color: DEFAULT_EMP_COLORS[1],
+    id: "e2", name: "Jordan", phone: "(555) 100-0002", color: DEFAULT_EMP_COLORS[1],
     minHours: 32, maxHours: 40, flex: 3, canOpen: true, canClose: true,
     availability: [true, true, true, true, true, true, true],
     timeOff: [],
   },
   {
-    id: "e3", name: "Taylor", phone: "(555) 555-0103", color: DEFAULT_EMP_COLORS[2],
+    id: "e3", name: "Taylor", phone: "(555) 100-0003", color: DEFAULT_EMP_COLORS[2],
     minHours: 25, maxHours: 32, flex: 1, canOpen: false, canClose: true,
     availability: [false, true, true, true, true, true, true],
     timeOff: [],
   },
   {
-    id: "e4", name: "Morgan", phone: "(555) 555-0104", color: DEFAULT_EMP_COLORS[3],
+    id: "e4", name: "Morgan", phone: "(555) 100-0004", color: DEFAULT_EMP_COLORS[3],
     minHours: 30, maxHours: 38, flex: 2, canOpen: true, canClose: false,
     availability: [true, true, true, true, true, true, true],
     timeOff: [{ id: uid(), start: "2026-07-14", end: "2026-07-20", note: "vacation" }],
   },
   {
-    id: "e5", name: "Alex", phone: "(555) 555-0105", color: DEFAULT_EMP_COLORS[4],
+    id: "e5", name: "Casey", phone: "(555) 100-0005", color: DEFAULT_EMP_COLORS[4],
     minHours: 20, maxHours: 30, flex: 3, canOpen: true, canClose: true,
     availability: [true, true, true, true, true, true, true],
     timeOff: [],

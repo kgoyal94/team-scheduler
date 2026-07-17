@@ -28,14 +28,41 @@ Long-term goal: productize for independent cafés/restaurants. See `STRATEGY.md`
 - Stack for MVP: **Next.js + Supabase + Vercel**.
 - Target market: single-location indie cafés → wider F&B → small groups. **No chains.**
 
+## Supabase (Phase 2 backend) — LIVE
+- Project: **team-scheduler** `ufpuxvfxgnjwavysbrgm`, org Reborn Enterprises LLC, us-east-1.
+- Org upgraded to **Pro** (~$25/mo) + this project's compute (~$10/mo). Billing is on a
+  personal card temporarily; switch to the LLC + EIN when the EIN arrives (~end July 2026).
+- Schema applied: `businesses`, `employees`, `time_off`, `shifts` (+ RLS). Migration lives at
+  `supabase/migrations/0001_init.sql`. ⚠️ RLS is permissive (authenticated = full access) —
+  tighten to per-business membership before a 2nd business.
+- API URL + anon key are in local `.env.local` (gitignored). Anon key is publishable/safe.
+
 ## In flight / next actions
-- [ ] Agree architecture + folder structure in writing (before vibe coding) — prevents the
-      worst collision (divergent foundations).
-- [ ] First shared task: **split `shift-board.html` into a modular Next.js structure**
-      (many small files) so parallel work stops colliding in one giant file.
-- [ ] MVP Phases 1–5 (see STRATEGY §1).
-- [ ] Validate unmet-need #6 (open/close/keyhold certification) with the CC manager at zero
-      build cost — is it the category wedge or just nice-to-have?
+- [x] Scaffold Next.js + TS; split the monolith (commit 324977a).
+- [x] Phase 2: Supabase persistence + magic-link auth (commit c991d29). Type-checks clean;
+      full build to be verified by Vercel (local `next build` avoided — disk-constrained here).
+- [x] **Deployed to Vercel** — project `team-scheduler` under team **reborn-industries-llc**
+      (projectId `prj_TeZW1Gz4K3hBUzgRLXJ0w8WC2MDW`). Prod alias:
+      **https://team-scheduler-kappa.vercel.app**. Cloud build passed (55s). Env vars set for
+      production/preview/development. Deployed via CLI (`vercel --prod`) — **not** Git-connected
+      yet (Vercel's GitHub app can't access Alex's private repo; auto-deploy-on-push unlocks
+      after the repo transfers to Reborn). Verified: `/` → 307 → `/login` (200); auth callback
+      does PKCE `exchangeCodeForSession`.
+- [ ] **Supabase Auth URL config (manual, dashboard)** — set Site URL + redirect allow-list to
+      the Vercel domain so magic-link works. Until then, login emails redirect to a disallowed
+      URL. See auth/url-configuration for project `ufpuxvfxgnjwavysbrgm`.
+- [ ] Runtime-verify the live app: magic-link login → first-run bootstrap seeds the design partner
+      → schedule persists across refresh.
+- [ ] Security: magic-link currently accepts ANY email + RLS is "authenticated = full access",
+      so any sign-in sees the one business. Restrict allowed emails before real customer data.
+- [ ] Naming/domain decision (ShiftLift-on-`useshiftlift.com` vs. hunt for clean `.com`+`.app`).
+- [ ] Repo ownership: transfer `lawalex/team-scheduler` → Reborn org (Alex as admin).
+- [ ] Validate unmet-need #6 (open/close/keyhold certification) with the CC manager.
+
+## ⚠️ Environment note (this Mac)
+Disk is chronically near-full (~5 GB free of 228). Full local `next build`s repeatedly filled
+the volume and deadlocked the shell. Use lightweight `tsc --noEmit` to verify locally; let
+Vercel do production builds in the cloud. Keep `.next`, npm cache, and Xcode DerivedData clear.
 
 ## Collaboration model (two vibe-coders, avoid collisions)
 

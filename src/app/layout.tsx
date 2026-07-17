@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Shift Board",
-  description: "Café shift scheduler",
+  title: "ShiftLift",
+  description: "Staff scheduling made simple",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

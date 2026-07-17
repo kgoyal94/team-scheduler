@@ -11,6 +11,7 @@ import { trainingCovers } from "../domain/training";
 import { buildWorkbook } from "../export/workbook";
 import { uid } from "../lib/util";
 import { Btn } from "./ui/Btn";
+import { Wordmark } from "./ui/Wordmark";
 import { WeekView } from "./schedule/WeekView";
 import { MonthView } from "./schedule/MonthView";
 import { SuggestModal } from "./schedule/SuggestModal";
@@ -452,7 +453,7 @@ export function Scheduler() {
           gap: 10,
         }}
       >
-        <span style={{ fontSize: 20 }}>⏳</span> Loading shift board…
+        <span style={{ fontSize: 20 }}>⏳</span> Loading your schedule…
       </div>
     );
   }
@@ -757,7 +758,7 @@ export function Scheduler() {
           }}
         >
           <div>
-            <div style={{ fontSize: 20, fontWeight: 900, letterSpacing: -0.3 }}>Shift Board</div>
+            <Wordmark size={20} />
             <div style={{ fontSize: 12, color: T.inkSoft }}>
               Open · Swing · Close · Training — drag shifts to move them
             </div>

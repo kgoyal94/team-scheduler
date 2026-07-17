@@ -6,6 +6,7 @@
 import { useState } from "react";
 import { getBrowserClient } from "../../data/supabase";
 import { T } from "../../lib/tokens";
+import { Wordmark } from "../../components/ui/Wordmark";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -60,12 +61,10 @@ export default function LoginPage() {
         }}
       >
         {/* Logo / title */}
-        <div style={{ marginBottom: 24 }}>
-          <div style={{ fontSize: 22, fontWeight: 900, letterSpacing: -0.3, color: T.ink }}>
-            Shift Board
-          </div>
-          <div style={{ fontSize: 13, color: T.inkSoft, marginTop: 3 }}>
-            the design partner — manager login
+        <div style={{ marginBottom: 20 }}>
+          <Wordmark size={28} />
+          <div style={{ fontSize: 13, color: T.inkSoft, marginTop: 4 }}>
+            Staff scheduling made simple
           </div>
         </div>
 
@@ -85,11 +84,17 @@ export default function LoginPage() {
             Check your inbox — we sent a magic link to <strong>{email}</strong>.
             <br />
             <span style={{ fontWeight: 400, color: T.inkSoft }}>
-              Click the link to sign in. You can close this tab.
+              Click the link in that email to sign in. It works once and expires shortly. You can
+              close this tab.
             </span>
           </div>
         ) : (
           <form onSubmit={handleSubmit}>
+            <p style={{ fontSize: 13, lineHeight: 1.5, color: T.inkSoft, margin: "0 0 16px" }}>
+              Enter your email and we&apos;ll send you a{" "}
+              <strong style={{ color: T.ink }}>magic link</strong> — a secure, one-time link that
+              signs you in instantly. No password to create or remember.
+            </p>
             <label
               style={{
                 display: "block",
