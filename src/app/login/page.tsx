@@ -3,7 +3,7 @@
  * Login page — magic-link email login via Supabase.
  * Matches the app's existing visual style (T tokens, inline styles).
  */
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { getBrowserClient } from "../../data/supabase";
 import { T } from "../../lib/tokens";
 import { Wordmark } from "../../components/ui/Wordmark";
@@ -13,6 +13,16 @@ export default function LoginPage() {
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+
+  // Surface auth errors passed back via the URL (?error=...).
+  useEffect(() => {
+    const err = new URLSearchParams(window.location.search).get("error");
+    if (err === "not-authorized") {
+      setError("This email isn't authorized for this account. Ask your manager for access.");
+    } else if (err === "auth-callback-failed") {
+      setError("That sign-in link didn't work or has expired. Please request a new one.");
+    }
+  }, []);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();

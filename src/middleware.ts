@@ -7,6 +7,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
+import { isAllowedEmail } from "./lib/access";
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "https://placeholder.supabase.co";
 const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "placeholder-key";
@@ -49,6 +50,14 @@ export async function middleware(request: NextRequest) {
   if (!isPublic && !user) {
     const loginUrl = request.nextUrl.clone();
     loginUrl.pathname = "/login";
+    return NextResponse.redirect(loginUrl);
+  }
+
+  // Signed in but not on the allowlist — deny access.
+  if (!isPublic && user && !isAllowedEmail(user.email)) {
+    const loginUrl = request.nextUrl.clone();
+    loginUrl.pathname = "/login";
+    loginUrl.searchParams.set("error", "not-authorized");
     return NextResponse.redirect(loginUrl);
   }
 
