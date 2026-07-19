@@ -3,6 +3,15 @@
 _Operational state: what it is, who's doing what, what's live, what's next. Strategy lives in
 `STRATEGY.md`; conventions in `CLAUDE.md`. **Update this every working session.**_
 
+## SITE
+```
+name:      ShiftLift
+status:    LIVE
+tagline:   Staff scheduling made simple.
+liveUrl:   https://shiftlift.app
+cta:       external → https://shiftlift.app
+```
+
 ---
 
 ## ▶ Next session — start here
