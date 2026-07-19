@@ -6,11 +6,12 @@ _Operational state: what it is, who's doing what, what's live, what's next. Stra
 ## SITE
 ```
 name:      ShiftLift
-status:    LIVE
+status:    BETA
 tagline:   Staff scheduling made simple.
 liveUrl:   https://shiftlift.app
-cta:       external → https://shiftlift.app
+cta:       beta-form → /shiftlift-beta (table: shiftlift_beta_signups)
 ```
+_In live private beta — one restaurant (the design partner) in real use; recruiting more via the beta page._
 
 ---
 
