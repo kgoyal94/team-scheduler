@@ -32,3 +32,6 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 .env*
+
+# Claude Code machine-local per-project settings (per-product API key path) — never commit
+.claude/settings.local.json
