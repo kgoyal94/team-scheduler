@@ -1,6 +1,6 @@
 # Team Scheduler — Product Strategy
 
-_Last updated: 2026-07-16. Owner: Kuhuk (PM). Design partner: the design partner (Alex Law)._
+_Last updated: 2026-07-20. Owner: Kuhuk (PM). Design partner: the design partner (Alex Law)._
 
 This doc is the strategic source of truth: MVP launch path, competitive landscape,
 blue ocean analysis, and prioritized roadmap. `CONTEXT.md` is the operational/living
@@ -158,7 +158,55 @@ simple OT warnings (#7) — each only when a paying segment pulls for it.
 **NEVER (guardrails that protect the blue ocean):** deep demand forecasting, native payroll,
 HR/ATS, POS lock-in, per-seat/per-location-cliff pricing, employee app fees, annual contracts.
 
-### Business model
-Flat, size-banded, month-to-month, one-click cancel (the model Schedulefly is praised for).
-Anchor ~**$29–39/mo flat for a ≤15-staff single location**; genuinely usable free tier for
-tiny teams (≤5 staff) as top-of-funnel. Never meter per employee.
+### Business model (monetization plan, 2026-07-20)
+
+Flat, per-location, month-to-month, one-click cancel (the model Schedulefly is praised for).
+**Never meter per employee** — café headcount churns seasonally and owners hate variable bills;
+café-native incumbents (7shifts, Homebase) price per-location and so do we.
+
+**Tiers:**
+
+| Tier | Price | Includes | Gated out |
+|---|---|---|---|
+| **Solo (free)** | $0 | 1 location, **≤6 employees**, basic weekly scheduling + Excel export | The certification/keyhold engine, staff-facing views, schedule broadcast, teams >6 |
+| **Café (paid)** | **$29/location/mo** ($290/yr, ~2 mo free) | Unlimited employees, 1 location, the **full product**: auto-certification from shadow shifts, coverage/gap engine, explainable suggestions, Excel export | — |
+| **Group (later)** | ~$25/location/mo at >3 locations | Multi-location roll-up (deferred; keeps a pricing-page expansion path) | — |
+
+**Why $29.** Priced deliberately *below* 7shifts Essentials ($39.99) and just *above* Homebase
+Essentials (~$25) — at the market's ~$30 paid-entry anchor. Undercuts the "bloated incumbent"
+while signalling a real tool, not a toy. See the §2 competitive table for the full anchor set.
+
+**The free/paid line is the moat.** Basic scheduling is given away by Homebase's free tier, so a
+free tier alone converts no one. The **certification / keyhold intelligence (§3, need #6) sits on
+the PAID side** — it's the one thing no incumbent and no spreadsheet does, so it *is* the reason to
+pay. The free tier exists for frictionless self-onboarding: a prospect enters real staff, feels the
+value, and hits the wall the moment the café is a real (>6 staff) operation.
+
+**Positioning (what a café actually pays for):** not "scheduling" (that's free — it's called Google
+Sheets) but **"the schedule that knows who can open, close, and hold keys — so you stop being the
+backup plan."** Lead with the certification wedge; never with feature count.
+
+**Validation discipline (quote before you build):**
+- **Design partner (the design partner):** graduate from tester to **founding customer** at a permanent
+  founding-partner rate (a discount off the $29 list), in exchange for a case study + being a
+  reference for prospect cafés. List price stays $29 in-market; the founding rate is an explicit
+  exception so we never anchor the real price down.
+- **The real willingness-to-pay proof is an independent, arm's-length café** paying the $29 list
+  price — get 1–2 unaffiliated cafés to a real "yes, I'll pay" (via the `/shiftlift-beta` page +
+  targeted outreach) before investing in self-serve billing. A design-partner's yes proves the
+  workflow; a stranger's paid invoice proves the *business*.
+
+**Go-to-market (café #2..N):** precision, not reach — **targeted, largely-automated founder-led
+outreach** to independent non-chain cafés (agent builds + drafts; founder approves/sends) plus
+**programmatic local SEO** (long-tail "café scheduling / When-I-Work-alternative / flat-pricing"
+pages, and a head-to-head "ShiftLift vs Homebase/7shifts for a single café" page). Broad paid ads
+are a poor fit for this buyer — not now. A referral / local-density loop (cafés talk to each other)
+turns on once 2–3 cafés pay. **Instrument weekly-active accounts + attributed-vs-organic signup
+first** — it gates every acquisition decision.
+
+**Billing build (don't build ahead of demand):** hand-invoice / Stripe payment link for the first
+1–2 cafés (≈zero build). Build self-serve Stripe Checkout + subscription (a `subscription_status`
+flag on the business gates paid features) only at **~3 paying cafés or the first inbound self-serve
+signup.** Cost-to-serve is infra-only (no LLM in the request path) → ~90%+ gross margin, so a
+ShiftLift dollar is a profitable dollar. **Prerequisite before a 2nd paying tenant:** tighten RLS
+to per-business membership (currently `authenticated = full access`, safe only at one tenant).
