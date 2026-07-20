@@ -1,0 +1,4 @@
+{
+  "model": "sonnet",
+  "_comment": "Cost discipline: default to Sonnet; use `/model opus` for planning/architecture/hard review; Haiku for mechanical/high-volume work. See reborn-industries-ops/kb/model-routing.md."
+}
