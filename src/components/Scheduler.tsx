@@ -242,9 +242,8 @@ export function Scheduler() {
       end: t.end,
       ...(override ? { override } : {}),
     };
-    // NOTE: createShift/the shifts table don't have an override column yet (Kuhuk's
-    // lane — src/data/shifts.ts + a migration). It round-trips fine in local state
-    // for this session but won't survive a reload until that lands.
+    // Override persists via the shifts.override jsonb column (see src/data/shifts.ts,
+    // migration 0002) — round-trips through createShift and survives a reload.
     const dbId = await createShift(bid, shiftData);
     if (!dbId) {
       console.error("[Scheduler] assign: createShift returned null");

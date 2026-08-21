@@ -20,8 +20,9 @@ _In live private beta — one restaurant (the design partner) in real use; recru
 2. **Run locally:** `npm install` → `npm run dev`. Needs `.env.local` (already present locally,
    gitignored). **Verify with `npx tsc --noEmit`, NOT `next build`** (disk-constrained Mac —
    see Environment note). Vercel does production builds.
-3. **Deploy:** `npx vercel --prod --yes --scope reborn-industries-llc` (repo isn't Git-connected
-   to Vercel yet, so deploys are manual via CLI).
+3. **Deploy:** automatic — the Vercel project is Git-connected to `kgoyal94/team-scheduler`
+   (production branch `main`). Push to `main` → prod deploy; PRs/other branches → preview.
+   Manual override still available: `npx vercel --prod --yes --scope reborn-industries-llc`.
 4. **Status:** MVP is LIVE and verified at **https://shiftlift.app**. The immediate next step is
    the **manager's first sign-in + entering real the design partner data** (see Next actions).
 
@@ -36,15 +37,18 @@ certification** with auto-cert from shadow shifts — no competitor does this we
 
 ## People
 - **Kuhuk** — PM (Sony Music PM by day; CS background). Drives productization + owns infra/billing.
-- **Alex Law** ("she") — repo owner (`lawalex/team-scheduler`), a **the design partner employee**, and
-  Reborn **employee #1**. Domain expert who validates the workflow on the floor.
+- **Alex Law** ("she") — co-owner + domain expert (was original repo owner; repo transferred to
+  Kuhuk 2026-08-20), a **the design partner employee**, and Reborn **employee #1**. Validates the
+  workflow on the floor.
 - Both **vibe code** (build with AI). See Collaboration model.
 
 ## Live resources
 - **App:** https://shiftlift.app (custom domain, registered third-party, on Vercel)
-- **Repo:** `lawalex/team-scheduler`; local clone `~/Desktop/Claude/team-scheduler` (HTTPS — no SSH key here)
+- **Repo:** `kgoyal94/team-scheduler` (transferred from `lawalex/` 2026-08-20; old URL redirects);
+  local clone `~/Desktop/Claude/reborn-industries/team-scheduler` (HTTPS)
 - **Vercel:** project `team-scheduler` under team **reborn-industries-llc**
-  (projectId `prj_TeZW1Gz4K3hBUzgRLXJ0w8WC2MDW`). Deploy via CLI (not Git-connected yet).
+  (projectId `prj_TeZW1Gz4K3hBUzgRLXJ0w8WC2MDW`). **Git-connected** to `kgoyal94/team-scheduler`,
+  production branch `main` → push-to-deploy (auto). CLI deploy still works as an override.
 - **Supabase:** project `team-scheduler` `ufpuxvfxgnjwavysbrgm`, org **Reborn Enterprises LLC**
   (Pro plan), us-east-1. Schema in `supabase/migrations/0001_init.sql`.
 - **Env vars** (set on Vercel for prod/preview/dev, and in local `.env.local`):

@@ -10,7 +10,7 @@
  *
  * time_off rows are assembled into Employee.timeOff after fetching.
  */
-import { Employee, TimeOff } from "../domain/types";
+import { Employee, TimeOff, BlockedTime } from "../domain/types";
 import { supabase } from "./supabase";
 
 // ---------------------------------------------------------------------------
@@ -28,6 +28,7 @@ interface EmpRow {
   can_open: boolean;
   can_close: boolean;
   availability: boolean[];
+  blocked_times: BlockedTime[] | null;
 }
 
 interface TimeOffRow {
@@ -54,6 +55,7 @@ function rowToEmployee(row: EmpRow, timeOffRows: TimeOffRow[]): Employee {
     canOpen: row.can_open,
     canClose: row.can_close,
     availability: row.availability,
+    blockedTimes: row.blocked_times ?? [],
     timeOff: timeOffRows
       .filter((t) => t.employee_id === row.id)
       .map((t) => ({
@@ -75,7 +77,7 @@ function rowToEmployee(row: EmpRow, timeOffRows: TimeOffRow[]): Employee {
 export async function loadEmployees(businessId: string): Promise<Employee[]> {
   const { data: empRows, error: empErr } = await supabase()
     .from("employees")
-    .select("id,name,phone,color,min_hours,max_hours,flex,can_open,can_close,availability")
+    .select("id,name,phone,color,min_hours,max_hours,flex,can_open,can_close,availability,blocked_times")
     .eq("business_id", businessId)
     .order("created_at");
 
@@ -125,6 +127,7 @@ export async function createEmployee(
       can_open: emp.canOpen,
       can_close: emp.canClose,
       availability: emp.availability,
+      blocked_times: emp.blockedTimes ?? [],
     })
     .select("id")
     .single();
@@ -165,6 +168,7 @@ export async function updateEmployee(
   if (patch.canOpen !== undefined) dbPatch.can_open = patch.canOpen;
   if (patch.canClose !== undefined) dbPatch.can_close = patch.canClose;
   if (patch.availability !== undefined) dbPatch.availability = patch.availability;
+  if (patch.blockedTimes !== undefined) dbPatch.blocked_times = patch.blockedTimes;
 
   if (Object.keys(dbPatch).length > 0) {
     const { error } = await supabase().from("employees").update(dbPatch).eq("id", id);

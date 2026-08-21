@@ -7,8 +7,9 @@
  *   end_min                ↔  end
  *   date                   ↔  date  (ISO string, same in both)
  *   type                   ↔  type  (same literal union)
+ *   override (jsonb|null)  ↔  override  ({ reason, summary } | undefined)
  */
-import { Shift } from "../domain/types";
+import { Shift, ShiftOverride } from "../domain/types";
 import { supabase } from "./supabase";
 
 // ---------------------------------------------------------------------------
@@ -22,6 +23,7 @@ interface ShiftRow {
   type: string;
   start_min: number;
   end_min: number;
+  override: ShiftOverride | null;
 }
 
 // ---------------------------------------------------------------------------
@@ -36,6 +38,9 @@ function rowToShift(row: ShiftRow): Shift {
     type: row.type as Shift["type"],
     start: row.start_min,
     end: row.end_min,
+    // Only present on shifts assigned through the override flow; leave the field
+    // off entirely (rather than null) so it round-trips with the client type.
+    ...(row.override ? { override: row.override } : {}),
   };
 }
 
@@ -47,7 +52,7 @@ function rowToShift(row: ShiftRow): Shift {
 export async function loadShifts(businessId: string): Promise<Shift[]> {
   const { data, error } = await supabase()
     .from("shifts")
-    .select("id,employee_id,date,type,start_min,end_min")
+    .select("id,employee_id,date,type,start_min,end_min,override")
     .eq("business_id", businessId)
     .order("date")
     .order("start_min");
@@ -82,6 +87,7 @@ export async function createShift(
       type: shift.type,
       start_min: shift.start,
       end_min: shift.end,
+      override: shift.override ?? null,
     })
     .select("id")
     .single();
@@ -103,7 +109,7 @@ export async function createShift(
  */
 export async function updateShift(
   id: string,
-  patch: Partial<Pick<Shift, "date" | "type" | "start" | "end" | "empId">>
+  patch: Partial<Pick<Shift, "date" | "type" | "start" | "end" | "empId" | "override">>
 ): Promise<void> {
   const dbPatch: Record<string, unknown> = {};
   if (patch.date !== undefined) dbPatch.date = patch.date;
@@ -111,6 +117,8 @@ export async function updateShift(
   if (patch.start !== undefined) dbPatch.start_min = patch.start;
   if (patch.end !== undefined) dbPatch.end_min = patch.end;
   if (patch.empId !== undefined) dbPatch.employee_id = patch.empId;
+  // Pass override: null to clear it (e.g. reassigning without an override).
+  if (patch.override !== undefined) dbPatch.override = patch.override ?? null;
 
   if (Object.keys(dbPatch).length === 0) return;
 
@@ -151,6 +159,7 @@ export async function bulkCreateShifts(
     type: s.type,
     start_min: s.start,
     end_min: s.end,
+    override: s.override ?? null,
   }));
 
   const { data, error } = await supabase()
