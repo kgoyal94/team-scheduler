@@ -3,9 +3,11 @@ import React from "react";
 import { Employee, Shift } from "../../domain/types";
 import { T } from "../../lib/tokens";
 import { DAY_NAMES, DEFAULT_EMP_COLORS } from "../../lib/constants";
+import { fmtTime } from "../../domain/time";
 import { uid } from "../../lib/util";
 import { Btn } from "../ui/Btn";
 import { TimeOffEditor } from "./TimeOffEditor";
+import { BlockedTimeEditor } from "./BlockedTimeEditor";
 
 interface TeamTabProps {
   employees: Employee[];
@@ -157,31 +159,45 @@ export function TeamTab({ employees, updateEmp, setEmployees, setShifts }: TeamT
           </div>
           <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 10 }}>
             <span style={{ fontSize: 12, fontWeight: 700, color: T.inkSoft }}>Available:</span>
-            {DAY_NAMES.map((dn, i) => (
-              <button
-                key={dn}
-                onClick={() => {
-                  const availability = [...emp.availability];
-                  availability[i] = !availability[i];
-                  updateEmp(emp.id, { availability });
-                }}
-                style={{
-                  borderRadius: 999,
-                  border: `1px solid ${emp.availability[i] ? T.ok : T.line}`,
-                  background: emp.availability[i] ? T.okBg : "#F3F4F1",
-                  color: emp.availability[i] ? T.ok : T.inkSoft,
-                  fontSize: 11,
-                  fontWeight: 700,
-                  padding: "2px 9px",
-                  cursor: "pointer",
-                  textDecoration: emp.availability[i] ? "none" : "line-through",
-                }}
-              >
-                {dn}
-              </button>
-            ))}
+            {DAY_NAMES.map((dn, i) => {
+              const dayBlocks = (emp.blockedTimes ?? []).filter((b) => b.dow === i);
+              const blocked = emp.availability[i] && dayBlocks.length > 0;
+              return (
+                <button
+                  key={dn}
+                  onClick={() => {
+                    const availability = [...emp.availability];
+                    availability[i] = !availability[i];
+                    updateEmp(emp.id, { availability });
+                  }}
+                  title={
+                    blocked
+                      ? dayBlocks.map((b) => `${fmtTime(b.start)}–${fmtTime(b.end)}`).join(", ")
+                      : undefined
+                  }
+                  style={{
+                    borderRadius: 999,
+                    border: `1px solid ${blocked ? T.warn : emp.availability[i] ? T.ok : T.line}`,
+                    background: blocked ? T.warnBg : emp.availability[i] ? T.okBg : "#F3F4F1",
+                    color: blocked ? T.warn : emp.availability[i] ? T.ok : T.inkSoft,
+                    fontSize: 11,
+                    fontWeight: blocked ? 800 : 700,
+                    padding: "2px 9px",
+                    cursor: "pointer",
+                    textDecoration: emp.availability[i] ? "none" : "line-through",
+                  }}
+                >
+                  {blocked
+                    ? `${dn} · ${fmtTime(dayBlocks[0].start)}–${fmtTime(dayBlocks[0].end)} blocked${
+                        dayBlocks.length > 1 ? ` +${dayBlocks.length - 1}` : ""
+                      }`
+                    : dn}
+                </button>
+              );
+            })}
           </div>
           <TimeOffEditor emp={emp} updateEmp={updateEmp} />
+          <BlockedTimeEditor emp={emp} updateEmp={updateEmp} />
         </div>
       ))}
       <Btn

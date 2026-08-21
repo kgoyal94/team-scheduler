@@ -40,6 +40,10 @@ export function ShiftCard({
   const issues = shiftIssues(s, emp);
   const editing = editShift === s.id;
   const isTraining = s.type === "training";
+  // Overridden shifts were consciously scheduled despite a rule violation —
+  // don't re-flag them as a warning (1i). They're still totalled at the week
+  // level (see WeekView's override tally) instead of listed individually.
+  const showIssues = issues.length > 0 && !s.override;
   return (
     <div
       key={s.id}
@@ -53,6 +57,7 @@ export function ShiftCard({
         setDropHover(null);
       }}
       style={{
+        position: "relative",
         background: st.bg,
         borderLeft: `4px solid ${st.edge}`,
         border: isTraining ? `1px dashed ${st.edge}` : undefined,
@@ -66,6 +71,21 @@ export function ShiftCard({
         boxShadow: "0 1px 2px rgba(30,40,35,0.08)",
       }}
     >
+      {s.override && (
+        <span
+          title={`Override${s.override.reason ? `: ${s.override.reason}` : ""}`}
+          style={{
+            position: "absolute",
+            top: -3,
+            right: -3,
+            width: 12,
+            height: 12,
+            borderRadius: 999,
+            background: T.warn,
+            border: "2px solid #fff",
+          }}
+        />
+      )}
       <div
         style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 6 }}
       >
@@ -91,7 +111,7 @@ export function ShiftCard({
           {emp ? emp.name : "?"}
         </span>
         <span style={{ display: "flex", gap: 4, alignItems: "center" }}>
-          {issues.length > 0 && (
+          {showIssues && (
             <span title={issues.join(" · ")} style={{ fontSize: 12 }}>
               ⚠️
             </span>
@@ -121,7 +141,12 @@ export function ShiftCard({
           </span>
         )}
       </div>
-      {issues.length > 0 && (
+      {s.override && (
+        <div style={{ fontSize: 10.5, color: T.warn, marginTop: 2, fontWeight: 700 }}>
+          Override · {s.override.summary}
+        </div>
+      )}
+      {showIssues && (
         <div style={{ fontSize: 10.5, color: T.danger, marginTop: 2 }}>{issues[0]}</div>
       )}
       {editing && (

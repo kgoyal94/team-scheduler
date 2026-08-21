@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useMemo, useEffect, useRef, useCallback } from "react";
-import { Employee, Shift, Settings } from "../domain/types";
+import { Employee, Shift, Settings, ShiftOverride } from "../domain/types";
 import { T } from "../lib/tokens";
 import { COVERAGE_TYPES } from "../lib/constants";
 import {
@@ -167,13 +167,20 @@ export function Scheduler() {
 
   const conflicts = useMemo(() => {
     const out: { msg: string; dow: number }[] = [];
-    shifts.filter((s) => weekDates.includes(s.date)).forEach((s) => {
+    // Overridden shifts are intentional — they don't belong in the warning list
+    // (see WeekView's override tally instead). See domain/rules.ts conflictsFor.
+    shifts.filter((s) => weekDates.includes(s.date) && !s.override).forEach((s) => {
       shiftIssues(s, empById[s.empId]).forEach((msg) =>
         out.push({ msg, dow: weekDates.indexOf(s.date) })
       );
     });
     return out;
   }, [shifts, weekDates, empById]);
+
+  const overrideCount = useMemo(
+    () => shifts.filter((s) => weekDates.includes(s.date) && s.override).length,
+    [shifts, weekDates]
+  );
 
   const hourRows = useMemo(
     () =>
@@ -223,11 +230,21 @@ export function Scheduler() {
    * assign — awaits DB insert so we use the real UUID in state.
    * The shift is added to state only after the insert succeeds.
    */
-  const assign = useCallback(async (empId: string, date: string, type: string) => {
+  const assign = useCallback(async (empId: string, date: string, type: string, override?: ShiftOverride) => {
     const bid = businessIdRef.current;
     if (!bid || !settings) return;
     const t = templateOrTraining(dowOf(date), type);
-    const shiftData = { empId, date, type: type as Shift["type"], start: t.start, end: t.end };
+    const shiftData: Omit<Shift, "id"> = {
+      empId,
+      date,
+      type: type as Shift["type"],
+      start: t.start,
+      end: t.end,
+      ...(override ? { override } : {}),
+    };
+    // NOTE: createShift/the shifts table don't have an override column yet (Kuhuk's
+    // lane — src/data/shifts.ts + a migration). It round-trips fine in local state
+    // for this session but won't survive a reload until that lands.
     const dbId = await createShift(bid, shiftData);
     if (!dbId) {
       console.error("[Scheduler] assign: createShift returned null");
@@ -697,6 +714,7 @@ export function Scheduler() {
           gaps={gaps}
           conflicts={conflicts}
           overMax={overMax}
+          overrideCount={overrideCount}
           hourRows={hourRows}
           weekIsEmpty={weekIsEmpty}
           copyPrevWeek={copyPrevWeek}
@@ -807,7 +825,7 @@ export function Scheduler() {
           employees={employees}
           shifts={shifts}
           settings={settingsNN}
-          assign={(empId, date, type) => { assign(empId, date, type); }}
+          assign={(empId, date, type, override) => { assign(empId, date, type, override); }}
           setSuggestFor={setSuggestFor}
         />
       )}

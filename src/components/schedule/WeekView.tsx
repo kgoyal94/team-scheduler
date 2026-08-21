@@ -34,6 +34,7 @@ interface WeekViewProps {
   gaps: Gap[];
   conflicts: Conflict[];
   overMax: HourRow[];
+  overrideCount: number;
   hourRows: HourRow[];
   weekIsEmpty: boolean;
   copyPrevWeek: () => void;
@@ -58,6 +59,7 @@ export function WeekView({
   gaps,
   conflicts,
   overMax,
+  overrideCount,
   hourRows,
   weekIsEmpty,
   copyPrevWeek,
@@ -75,7 +77,7 @@ export function WeekView({
 }: WeekViewProps) {
   return (
     <>
-      {(gaps.length > 0 || conflicts.length > 0 || overMax.length > 0) && (
+      {(gaps.length > 0 || conflicts.length > 0 || overMax.length > 0 || overrideCount > 0) && (
         <div
           style={{
             background: "#fff",
@@ -125,6 +127,11 @@ export function WeekView({
                 ⚠ {DAY_NAMES[c.dow]}: {c.msg}
               </Chip>
             ))}
+            {overrideCount > 0 && (
+              <Chip bg={T.warnBg} ink={T.warn}>
+                🚩 {overrideCount} override{overrideCount === 1 ? "" : "s"} this week · review
+              </Chip>
+            )}
           </div>
         </div>
       )}

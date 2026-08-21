@@ -1,18 +1,20 @@
 "use client";
-import { Employee, Shift, Settings } from "../../domain/types";
+import { useState } from "react";
+import { Employee, Shift, Settings, ShiftTypeKey, ShiftOverride } from "../../domain/types";
 import { T } from "../../lib/tokens";
 import { SHIFT_TYPES, DAY_NAMES } from "../../lib/constants";
 import { addDays, dowOf, fmtDate, fmtTime, mondayOf } from "../../domain/time";
-import { rankCandidates } from "../../domain/rules";
+import { rankCandidates, conflictsFor } from "../../domain/rules";
 import { Btn } from "../ui/Btn";
 import { Chip } from "../ui/Chip";
+import { OverrideConfirm } from "./OverrideConfirm";
 
 interface SuggestModalProps {
   suggestFor: { date: string; type: string };
   employees: Employee[];
   shifts: Shift[];
   settings: Settings;
-  assign: (empId: string, date: string, type: string) => void;
+  assign: (empId: string, date: string, type: string, override?: ShiftOverride) => void;
   setSuggestFor: (v: { date: string; type: string } | null) => void;
 }
 
@@ -24,6 +26,9 @@ export function SuggestModal({
   assign,
   setSuggestFor,
 }: SuggestModalProps) {
+  const [showAll, setShowAll] = useState(false);
+  const [overrideTarget, setOverrideTarget] = useState<Employee | null>(null);
+
   const tmplFor = (dow: number, type: string) =>
     settings.days[dow].shifts[type as keyof typeof settings.days[0]["shifts"]];
   const trainingDefault = (dow: number) => {
@@ -46,6 +51,19 @@ export function SuggestModal({
     tmpl,
     settings,
   });
+
+  const openOverride = (emp: Employee) => setOverrideTarget(emp);
+  const overrideConflicts = overrideTarget
+    ? conflictsFor({
+        emp: overrideTarget,
+        shifts,
+        dateISO: suggestFor.date,
+        type: suggestFor.type as ShiftTypeKey,
+        weekDates: wk,
+        tmpl,
+      })
+    : [];
+
   return (
     <div
       onClick={() => setSuggestFor(null)}
@@ -108,8 +126,8 @@ export function SuggestModal({
           <div
             key={c.emp.id}
             style={{
-              border: `1px solid ${i === 0 ? T.ok : T.line}`,
-              background: i === 0 ? T.okBg : "#fff",
+              border: `1px solid ${c.needsOverride ? T.warn : i === 0 ? T.ok : T.line}`,
+              background: c.needsOverride ? T.warnBg : i === 0 ? T.okBg : "#fff",
               borderRadius: 10,
               padding: "10px 12px",
               marginBottom: 8,
@@ -122,37 +140,63 @@ export function SuggestModal({
             <div>
               <div style={{ fontWeight: 800, fontSize: 14 }}>
                 {c.emp.name}{" "}
-                {i === 0 && (
+                {i === 0 && !c.needsOverride && (
                   <Chip bg={T.ok} ink="#fff" style={{ marginLeft: 4 }}>
                     Best match
                   </Chip>
                 )}
               </div>
-              <div style={{ fontSize: 11.5, color: T.inkSoft }}>
+              <div style={{ fontSize: 11.5, color: c.needsOverride ? T.warn : T.inkSoft }}>
                 {c.reasons.join(" · ")}
               </div>
             </div>
-            <Btn
-              kind="primary"
-              small
-              onClick={() => assign(c.emp.id, suggestFor.date, suggestFor.type)}
-            >
-              Assign
-            </Btn>
+            {c.needsOverride ? (
+              <Btn kind="warn" small onClick={() => openOverride(c.emp)}>
+                Override
+              </Btn>
+            ) : (
+              <Btn
+                kind="primary"
+                small
+                onClick={() => assign(c.emp.id, suggestFor.date, suggestFor.type)}
+              >
+                Assign
+              </Btn>
+            )}
           </div>
         ))}
         {excluded.length > 0 && (
           <>
             <div
               style={{
-                fontSize: 11,
-                fontWeight: 700,
-                color: T.inkSoft,
-                letterSpacing: 1,
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
                 margin: "12px 0 6px",
+                gap: 8,
               }}
             >
-              RULED OUT
+              <div
+                style={{ fontSize: 11, fontWeight: 700, color: T.inkSoft, letterSpacing: 1 }}
+              >
+                RULED OUT
+              </div>
+              <button
+                onClick={() => setShowAll((v) => !v)}
+                style={{
+                  border: `1px solid ${T.warn}55`,
+                  background: T.warnBg,
+                  color: T.warn,
+                  borderRadius: 999,
+                  fontSize: 11,
+                  fontWeight: 800,
+                  padding: "4px 11px",
+                  cursor: "pointer",
+                  fontFamily: "inherit",
+                }}
+              >
+                {showAll ? "Hide override" : "Override — show everyone"}
+              </button>
             </div>
             {excluded.map((x) => (
               <div
@@ -163,11 +207,19 @@ export function SuggestModal({
                   padding: "4px 2px",
                   display: "flex",
                   justifyContent: "space-between",
+                  alignItems: "center",
                   gap: 8,
                 }}
               >
-                <span style={{ fontWeight: 700 }}>{x.emp.name}</span>
-                <span style={{ textAlign: "right" }}>{x.why}</span>
+                <span>
+                  <span style={{ fontWeight: 700, color: T.ink }}>{x.emp.name}</span>{" "}
+                  <span>{x.why}</span>
+                </span>
+                {showAll && (
+                  <Btn kind="warn" small onClick={() => openOverride(x.emp)}>
+                    Override
+                  </Btn>
+                )}
               </div>
             ))}
           </>
@@ -176,6 +228,20 @@ export function SuggestModal({
           <Btn onClick={() => setSuggestFor(null)}>Close</Btn>
         </div>
       </div>
+      {overrideTarget && (
+        <OverrideConfirm
+          emp={overrideTarget}
+          dateISO={suggestFor.date}
+          type={suggestFor.type}
+          tmpl={tmpl}
+          conflicts={overrideConflicts}
+          onConfirm={(override) => {
+            assign(overrideTarget.id, suggestFor.date, suggestFor.type, override);
+            setOverrideTarget(null);
+          }}
+          onCancel={() => setOverrideTarget(null)}
+        />
+      )}
     </div>
   );
 }

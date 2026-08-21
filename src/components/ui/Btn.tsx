@@ -4,7 +4,7 @@ import { T } from "../../lib/tokens";
 interface BtnProps {
   children: React.ReactNode;
   onClick?: () => void;
-  kind?: "ghost" | "primary" | "danger";
+  kind?: "ghost" | "primary" | "danger" | "warn";
   small?: boolean;
   style?: React.CSSProperties;
   title?: string;
@@ -32,6 +32,11 @@ export function Btn({ children, onClick, kind = "ghost", small, style, title }: 
     base.background = T.dangerBg;
     base.color = T.danger;
     base.border = `1px solid ${T.danger}44`;
+  }
+  if (kind === "warn") {
+    base.background = T.warn;
+    base.color = "#fff";
+    base.border = `1px solid ${T.warn}`;
   }
   return (
     <button onClick={onClick} style={base} title={title}>
