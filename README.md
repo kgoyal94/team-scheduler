@@ -103,48 +103,53 @@ First sign-in bootstraps a demo business with five employees and a seeded week.
 
 ## Why it was shut down
 
-This is the part worth reading.
+It died on a pricing error that was made before any code was written, and the error came out of
+a competitive analysis that was almost entirely correct.
 
-ShiftLift reached production and ran as a private beta with a real independent restaurant —
-where our design partner both co-owns this project and works on the floor. The highest-motivation
-customer the product would ever get.
+The analysis said the main café-native competitor, 7shifts, charged **$39.99 per location per
+month**. We set our list price at $29 to undercut it. That reasoning held up through months of
+review.
 
-**It was used, genuinely, for about two weeks — and then use stopped and nobody ever paid.**
-Pulling the production database at teardown showed the real staff roster entered in place of the
-demo data, and 141 shifts covering seven weeks, built across four working sessions between
-August 8 and August 23 — including schedules set two weeks into the future. Rule overrides,
-time-off, and availability blocks all got used. Then it went quiet, three weeks before shutdown.
+$39.99 is a real 7shifts price. It is not the price of shift scheduling.
 
-One number in that export matters more than the rest. **The certification engine — the
-differentiator, and the entire justification for charging anything — was used twice in 141
-shifts.** What got used was ordinary scheduling. What we were selling sat untouched.
+7shifts is a payroll company, and scheduling is what they give away to win the account. Their
+scheduling product is **free** for a single location, with a headcount cap comfortably above
+every café in our stated beachhead. The $39.99 belonged to a fuller, payroll-centric plan — a
+different product, for a different buyer, solving a different problem.
 
-Three findings, in increasing order of how much they mattered:
+So the real comparison was never $29 against $39.99. It was **$29 against $0**, from a
+better-known vendor, for the customer we had specifically chosen to target.
 
-1. **They already had a scheduler** — an incumbent tool, already paid for, already set up.
-2. **They didn't use that either.** A scheduler that validates against labor rules creates a
-   written record of every place a small operator is out of compliance — and a tool that
-   documents your exposure is a tool you stop opening. The real incumbent wasn't software at
-   all. It was paper, a spreadsheet, and a group text.
-3. **The incumbent gives scheduling away for free** — up to 30 employees at one location,
-   which is larger than every café in the stated beachhead. Our list price was $29/location/month.
+There is no version of that fight we win. Not with a better certification engine, not at $19,
+not at $9. When a competitor hands out your entire product to acquire a customer for something
+else, you are not in a feature fight — you are in a business-model fight, and features do not
+settle it. We had no adjacent product to upsell into, so scheduling had to carry the whole
+price, against a company for whom it was a coupon.
 
-Point 3 is the one that ends it. Willingness to pay for *scheduling* at a single-location indie
-café is approximately zero, because the category leader has priced it at zero to acquire
-accounts for payroll and POS upsells. The certification engine is a genuine differentiator, but
-a differentiator on top of a free commodity is a feature, not a business — and we had no
-adjacent product to upsell into.
+The failure mode is worth naming precisely, because it was not a hallucination and not
+laziness. Every individual fact in that analysis was verifiable. The error lived in the
+**mapping between a vendor and a SKU**: "7shifts costs $39.99" is a true sentence and a useless
+one. The question we needed answered was what this café would pay to do this job, and we
+accepted an answer to what this company charges.
 
-Two things we got right, and one we got wrong:
+It was also self-contradicting, and we missed that too. Elsewhere in [`STRATEGY.md`](STRATEGY.md)
+the same analysis correctly names the real default as "Google Sheets + group texts," and flags a
+competitor's free tier as the actual price competitor. Both true, both written down, both
+ignored, because the pricing section had already produced a tidy number. A long document can
+hold two incompatible conclusions without complaining; a reader in a hurry keeps the convenient
+one.
 
-- **Right:** we shipped a real, working, deployed product in weeks instead of months.
-- **Right:** we ran the stall as a diagnosis instead of assuming we needed more features. The
-  finding was a *market* finding, and more features would have buried it.
-- **Wrong:** we benchmarked pricing against the incumbent's paid tier when our own competitive
-  analysis had already written down that the real default was "Google Sheets and group texts."
-  We wrote down the right answer and then priced against the wrong anchor. A single "what does
-  the free tier of the leader actually include?" check would have surfaced the $0 floor before
-  any code was written.
+What we got right, and wrong:
+
+- **Right:** we shipped a real, working, deployed product in weeks instead of months. The
+  engineering thesis held.
+- **Right:** when it stalled, we treated it as a market question rather than a missing-features
+  question. More features would have buried the finding.
+- **Wrong:** we never checked what the market leader's *free* tier actually included, or measured
+  it against the size of our target customer. That is fifteen minutes of work, and it was worth
+  more than the entire build.
+- **Wrong:** we never asked what our product was a loss leader *for*. The answer would have
+  ended the project in July.
 
 The full write-up is in [`docs/post-mortem.md`](docs/post-mortem.md). The product strategy as
 it stood — competitive landscape, blue-ocean analysis, roadmap — is preserved unedited in

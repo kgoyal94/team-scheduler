@@ -30,15 +30,17 @@ possible is documented in `CLAUDE.md`.
   first-login bootstrap → Postgres persistence, all confirmed working in production.
 - **Ran as a private beta** with one real independent restaurant.
 - **Revenue: $0.** List price was set at $29/location/month; no customer was ever billed.
-- **Adoption: real but brief.** Contrary to what we believed at the time, the design partner
-  *did* adopt it — real roster entered, 141 shifts across 7 weeks built in four sessions
-  between 2026-08-08 and 2026-08-23, scheduling up to two weeks ahead. Then use stopped dead
-  and never resumed. Discovered only at teardown, from the production DB export.
-- **The differentiator went unused:** 2 training/certification shifts out of 141.
-- **Shut down 2026-09-14.** Cause was a market finding, not a product defect: the category
-  leader gives single-location scheduling away free above our entire target segment's size,
-  so willingness to pay was ~$0. The adoption discovery sharpened this rather than changing
-  it — they used the free-commodity half and ignored the half we priced.
+- **Shut down 2026-09-14 on a pricing error, not a product defect.** Our competitive analysis
+  reported 7shifts at **$39.99/location/month** and we priced $29 to undercut it. That figure
+  belonged to a different, payroll-centric plan; **7shifts gives scheduling away free** for a
+  single location, above the size of every café in our stated beachhead. The real anchor was
+  **$0**. Details → [`docs/post-mortem.md`](docs/post-mortem.md).
+- **Arm's-length demand: zero.** The `/shiftlift-beta` page ran ~2 months and got **0 signups**.
+- **Adoption: real but brief, and it proved nothing about price.** The design partner did use it
+  — real roster, 141 shifts over 7 weeks, four sessions 2026-08-08 → 2026-08-23 — then stopped.
+  That validates the workflow only. Usage by a related party on a free tool is not willingness
+  to pay.
+- **The feature we intended to charge for went unused:** 2 training/certification shifts of 141.
 
 ## What shipped
 - Week + month schedule board with drag-to-move shifts
@@ -62,9 +64,11 @@ multi-tenancy · any iOS client.
 |---|---|
 | GitHub repo | **Public.** Kept as a portfolio artifact. |
 | Interactive demo | `docs/index.html`, served via GitHub Pages. No backend, no data. |
-| Production data | **Exported and preserved privately** before any teardown (real staff names — never published). |
-| Supabase project | **Pending founder decision.** Still running; Pro-tier projects cannot be paused, so the choice is delete or keep. |
-| Vercel project + `shiftlift.app` | **Pending** — held until the Supabase call is made. Domain registration is third-party and expires on its own. |
+| Production data | **Exported and preserved privately** before teardown (real staff names — never published). |
+| Supabase project | **Deleted.** Database, schema and auth users destroyed (Pro-tier projects cannot be paused, so delete was the only way to release it). |
+| Vercel project | **Deleted.** |
+| `shiftlift.app` | **Released** from Vercel; now 404s. Third-party registration left to lapse — do not renew. |
+| Marketing presence | Removed from the rebornindustries.co showcase; the beta signup page is gone. |
 
 Nothing in this repository contains customer data: the demo runs on fictional staff and the
 seeded demo set, and the real roster was never committed.
