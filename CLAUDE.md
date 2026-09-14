@@ -1,4 +1,9 @@
-# CLAUDE.md — conventions for the Team Scheduler codebase
+# CLAUDE.md — conventions for the ShiftLift codebase
+
+> **⚠️ ARCHIVED.** This project shut down in September 2026 and is no longer developed. This
+> file is preserved as a record of how two people coordinated concurrent AI-assisted work on
+> one codebase — the ownership map below is the part worth reading. See
+> [`docs/post-mortem.md`](docs/post-mortem.md).
 
 This file is read by AI coding agents (and humans). Its purpose: **two people are vibe
 coding one repo — follow these rules so our diffs stay small, compatible, and mergeable.**
@@ -52,7 +57,7 @@ team-scheduler/
 ├── CLAUDE.md · CONTEXT.md · STRATEGY.md · README.md
 ├── .env.example · .env.local(gitignored) · .gitignore · .nvmrc · .prettierrc
 ├── package.json · package-lock.json · next.config.js · tsconfig.json
-├── shift-board.html          # ORIGINAL prototype — keep as reference until fully ported, then delete
+├── docs/index.html           # ORIGINAL single-file prototype — now the archived interactive demo
 ├── public/
 ├── supabase/
 │   └── migrations/           # SQL migrations                                [Kuhuk]
@@ -76,7 +81,7 @@ team-scheduler/
     ├── data/                 # persistence layer                             [Kuhuk]
     │   ├── supabase.ts       # client
     │   ├── employees.ts · shifts.ts · settings.ts   # load/save per entity
-    │   └── seed.ts           # the design partner bootstrap data
+    │   └── seed.ts           # generic demo bootstrap data
     ├── auth/                                                                  [Kuhuk]
     │   └── (session helpers, route guards)
     ├── export/
@@ -87,7 +92,7 @@ team-scheduler/
 ```
 
 ### Ownership map (mirrors real roles — see CONTEXT.md)
-- **Alex** (validates product-truth live at the design partner): `src/domain/`, `src/components/{schedule,team,settings}/`
+- **Alex** (validates product-truth live at the design-partner restaurant): `src/domain/`, `src/components/{schedule,team,settings}/`
 - **Kuhuk** (platform / productization): `src/data/`, `src/auth/`, `src/app/`, `supabase/`
 - **SHARED (change only after a quick heads-up):** `src/lib/`, `src/domain/types.ts`,
   `src/components/ui/`, `src/export/`. These are the seams; a silent change here breaks the

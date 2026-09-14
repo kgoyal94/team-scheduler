@@ -1,6 +1,12 @@
-# Team Scheduler — Product Strategy
+# ShiftLift — Product Strategy
 
-_Last updated: 2026-07-20. Owner: Kuhuk (PM). Design partner: the design partner (Alex Law)._
+> **⚠️ HISTORICAL DOCUMENT — preserved unedited.** This is the strategy as it stood at the
+> project's peak in July 2026. It is kept deliberately uncorrected, including **§4's pricing
+> reasoning, which turned out to be the mistake that killed the project** — it benchmarks
+> $29/location against a paid competitor tier when the real anchor for the stated beachhead was
+> $0. See [`docs/post-mortem.md`](docs/post-mortem.md) for what actually happened and why.
+
+_Last updated: 2026-07-20. Owner: Kuhuk (PM). Design partner: one independent café/restaurant._
 
 This doc is the strategic source of truth: MVP launch path, competitive landscape,
 blue ocean analysis, and prioritized roadmap. `CONTEXT.md` is the operational/living
@@ -11,8 +17,8 @@ doc (current state, who's doing what). Keep them in sync.
 ## 0. Snapshot
 
 - **Product:** "Shift Board" — a shift-scheduling tool, currently a single-file React
-  prototype (`shift-board.html`) tailor-made for **the design partner** restaurant.
-- **Trial customer / design partner:** the design partner (Alex Law is repo owner + a CC employee).
+  prototype (`docs/index.html`) tailor-made for **one independent restaurant** (our design partner).
+- **Trial customer / design partner:** one independent restaurant, reached through a co-owner who works there.
 - **Long-term goal:** productize for independent cafés/restaurants.
 - **Platform decision:** **Web first** (not iOS) — see §1.
 - **MVP scope decision:** Fast (2–3 weeks), **manager-only**, persist + deploy the
@@ -23,7 +29,7 @@ doc (current state, who's doing what). Keep them in sync.
 
 ---
 
-## 1. the design partner MVP Launch Path (Web, 2–3 weeks, manager-only)
+## 1. Design-Partner MVP Launch Path (Web, 2–3 weeks, manager-only)
 
 ### One-sentence strategy
 Don't build features — **make the prototype real**: give it a saved home, put it online,
@@ -130,7 +136,7 @@ Beachhead          Adjacent expansion       Natural upsell          TRAP — avo
 ─────────          ──────────────────       ─────────────           ────────────
 Single-location    Other single-location    2–5 location small      Chains / franchise
 indie cafés  ──►   F&B (bars, bakeries, ──► groups (flat multi- ──╳  (HotSchedules/Fourth
-(the design partner)    quick-serve)             loc pricing = wedge       territory)
+(design partner)   quick-serve)             loc pricing = wedge       territory)
                                             vs Homebase's cliff)
 ```
 Climbing to chains means competing on forecasting, POS depth, and enterprise compliance —
@@ -187,7 +193,7 @@ Sheets) but **"the schedule that knows who can open, close, and hold keys — so
 backup plan."** Lead with the certification wedge; never with feature count.
 
 **Validation discipline (quote before you build):**
-- **Design partner (the design partner):** graduate from tester to **founding customer** at a permanent
+- **Design partner:** graduate from tester to **founding customer** at a permanent
   founding-partner rate (a discount off the $29 list), in exchange for a case study + being a
   reference for prospect cafés. List price stays $29 in-market; the founding rate is an explicit
   exception so we never anchor the real price down.

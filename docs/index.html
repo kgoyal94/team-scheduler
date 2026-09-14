@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Shift Board</title>
+<title>ShiftLift — interactive demo</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
@@ -107,7 +107,7 @@ const defaultSettings = {
 /* Seed data — from the 7/13–7/19 example schedule                     */
 /* ------------------------------------------------------------------ */
 const seedEmployees = [
-  { id: "e1", name: "Sam", phone: "(555) 555-0101", color: DEFAULT_EMP_COLORS[0], minHours: 35, maxHours: 40, flex: 2, canOpen: true,  canClose: true,
+  { id: "e1", name: "Sam",    phone: "(555) 555-0101", color: DEFAULT_EMP_COLORS[0], minHours: 35, maxHours: 40, flex: 2, canOpen: true,  canClose: true,
     availability: [true,true,true,true,true,true,true],
     timeOff: [
       { id: uid(), start: "2026-07-19", end: "2026-07-19", note: "req off" },
@@ -116,12 +116,12 @@ const seedEmployees = [
     ] },
   { id: "e2", name: "Jordan", phone: "(555) 555-0102", color: DEFAULT_EMP_COLORS[1], minHours: 32, maxHours: 40, flex: 3, canOpen: true,  canClose: true,
     availability: [true,true,true,true,true,true,true], timeOff: [] },
-  { id: "e3", name: "Taylor",   phone: "(555) 555-0103", color: DEFAULT_EMP_COLORS[2], minHours: 25, maxHours: 32, flex: 1, canOpen: false, canClose: true,
+  { id: "e3", name: "Taylor", phone: "(555) 555-0103", color: DEFAULT_EMP_COLORS[2], minHours: 25, maxHours: 32, flex: 1, canOpen: false, canClose: true,
     availability: [false,true,true,true,true,true,true], timeOff: [] },
   { id: "e4", name: "Morgan", phone: "(555) 555-0104", color: DEFAULT_EMP_COLORS[3], minHours: 30, maxHours: 38, flex: 2, canOpen: true,  canClose: false,
     availability: [true,true,true,true,true,true,true],
     timeOff: [{ id: uid(), start: "2026-07-14", end: "2026-07-20", note: "vacation" }] },
-  { id: "e5", name: "Alex",   phone: "(555) 555-0105", color: DEFAULT_EMP_COLORS[4], minHours: 20, maxHours: 30, flex: 3, canOpen: true,  canClose: true,
+  { id: "e5", name: "Casey",  phone: "(555) 555-0105", color: DEFAULT_EMP_COLORS[4], minHours: 20, maxHours: 30, flex: 3, canOpen: true,  canClose: true,
     availability: [true,true,true,true,true,true,true], timeOff: [] },
 ];
 
@@ -132,7 +132,7 @@ const seedShifts = [
   { id: uid(), empId: "e2", date: addDays(W,1), type: "open",  start: 450, end: 840 },
   { id: uid(), empId: "e5", date: addDays(W,1), type: "swing", start: 510, end: 900 },
   { id: uid(), empId: "e1", date: addDays(W,1), type: "close", start: 840, end: 1260 },
-  // Taylor shadows the Tuesday & Wednesday openings — completed → auto-certifies her to open
+  // Taylor shadows the Tuesday & Wednesday openings — completed → auto-certifies them to open
   { id: uid(), empId: "e3", date: addDays(W,1), type: "training", start: 450, end: 840 },
   { id: uid(), empId: "e2", date: addDays(W,2), type: "open",  start: 450, end: 840 },
   { id: uid(), empId: "e5", date: addDays(W,2), type: "swing", start: 510, end: 900 },
@@ -903,7 +903,7 @@ function CafeScheduler() {
       <div style={{ maxWidth: 1240, margin: "0 auto" }}>
         <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 10, marginBottom: 14 }}>
           <div>
-            <div style={{ fontSize: 20, fontWeight: 900, letterSpacing: -0.3 }}>Shift Board</div>
+            <div style={{ fontSize: 20, fontWeight: 900, letterSpacing: -0.4 }}>Shift<span style={{ color: "#2E7D6B" }}>Lift</span></div>
             <div style={{ fontSize: 12, color: T.inkSoft }}>Open · Swing · Close · Training — drag shifts to move them</div>
           </div>
           <div style={{ marginLeft: "auto", display: "flex", gap: 6 }}>

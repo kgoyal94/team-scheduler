@@ -1,6 +1,6 @@
 -- Team Scheduler — initial schema (Phase 2)
 --
--- Single-tenant MVP (one business: the design partner), but every row carries a
+-- Single-tenant MVP (one business), but every row carries a
 -- business_id FK so tightening to multi-tenant later is a policy change, not a
 -- schema rewrite.
 --
