@@ -20,8 +20,10 @@ This is what happened and what it cost us to learn.
 | 17 Jul 2026 | Live in production, verified end-to-end (auth → bootstrap → persistence) |
 | 20 Jul 2026 | List price set at $29/location/month |
 | Aug 2026 | Shipped rule overrides + time-boxed availability, persisted to Postgres |
-| 21 Aug 2026 | Adoption diagnosis run — five weeks live, real data still not entered |
-| Sep 2026 | Shut down. Repo archived and opened; hosted app and database torn down |
+| 8–23 Aug 2026 | **Actually used.** Real roster entered; 141 shifts across 7 weeks built in four sessions |
+| 21 Aug 2026 | Adoption diagnosis run — on the mistaken belief that real data had never been entered |
+| 23 Aug 2026 | Last write to the database. Use stops and never resumes |
+| Sep 2026 | Shut down. Repo archived and opened |
 
 Total cost: a few weeks of two people's evenings and about $10/month of infrastructure.
 Total revenue: $0.
@@ -30,16 +32,41 @@ Total revenue: $0.
 
 ## The signal
 
-The product was live and working for five weeks, and our design partner never put their real
-team into it.
+> **⚠️ Correction, recorded at teardown (September 2026).** The diagnosis below was run on
+> 21 August 2026 on the belief that our design partner had never entered their real data. **That
+> was wrong.** When the production database was exported immediately before teardown, it showed
+> the real staff roster in place and 141 shifts covering seven weeks, written across four
+> sessions between 8 and 23 August — 51 of them created *on 21 August*, the day the diagnosis
+> was written. We diagnosed a non-adoption that had, by then, already turned into adoption.
+>
+> We never checked the database. The whole premise was inferred from the fact that nobody told
+> us they'd started. The corrected reading is below, and it is a sharper finding than the one we
+> thought we had.
 
-That partner is the most motivated customer this product could ever have had: a co-owner of
-the project who also works at the restaurant, with the prototype built to their own workflow.
-If adoption fails there, the variable isn't the tool.
+The product was live for about five weeks before anything happened, and then it *was* used —
+for roughly two weeks, and then not again.
+
+What the export actually showed:
+
+- The real staff roster entered, replacing the seeded demo employees
+- 141 shifts across 7 weeks, built in four working sessions (8, 19, 21, 23 August)
+- Forward planning — the last session scheduled two weeks into the future
+- Rule overrides used 6 times; 7 time-off entries; availability blocks used
+- **Training/certification shifts: 2 out of 141**
+- Last write 23 August. Nothing after. Three weeks of silence, then shutdown.
+
+That last-but-one line is the finding. **The certification engine was the differentiator, the
+moat, and the sole justification for charging $29 — and it accounts for 1.4% of what they
+built.** They used us as a plain scheduler. The part we thought we were selling, they barely
+touched.
+
+That partner was also the most motivated customer this product could ever have had: a co-owner
+of the project who also works at the restaurant, with the prototype built to their own workflow.
+Real usage there is a much weaker signal than it looks, for the same reason a "yes" from them
+would have been — and the usage still stopped.
 
 What made it sharper: **they already owned a competing scheduler, and weren't using that
-either.** Two scheduling tools, zero adoption, at one restaurant. Whatever was defeating
-adoption was defeating scheduling software generically at that business, not defeating *us*.
+either.** Two scheduling tools, neither retained, at one restaurant.
 
 ## Five hypotheses
 
@@ -57,7 +84,9 @@ separate the cases — so the session couldn't be talked into confirming whateve
 H1 was the prior, and it applied to ShiftLift exactly as built — first login seeded demo data
 the manager had to replace by hand.
 
-**All five were product hypotheses. The answer was none of them.**
+**All five were product hypotheses. The answer was none of them** — and we now know H1 was
+actively false: somebody did climb the setup cliff, entered the whole roster, and built seven
+weeks of schedules. The cliff wasn't what stopped this.
 
 ## What we actually found
 
@@ -89,7 +118,13 @@ The certification and auto-certification engine was real. As far as we could tel
 handled keyhold certification well, and the shadow-shift mechanic that auto-grants certification
 is genuinely a nice piece of design. We were right that it was defensible.
 
-We were wrong about what defensibility buys you.
+We were wrong about two things: whether anyone wanted it, and what defensibility buys you.
+
+**Whether anyone wanted it** is settled by the export. Two training shifts in 141. The one real
+user we ever had, building seven weeks of real schedules, reached for the moat twice. A
+differentiator nobody exercises is not a differentiator; it's an opinion we held about their
+workflow. We had five weeks of live production telemetry available to tell us this at any point
+and never looked — we were waiting to be told how it was going instead of reading the database.
 
 **A differentiator layered on top of a free commodity is a feature, not a business.** To a
 prospect comparing options, we were a scheduler that costs $29 and does one extra thing, versus
@@ -103,6 +138,15 @@ for whom your entire product is a loss leader.
 
 ## The mistakes
 
+- **We never read our own database.** This is the worst one, because it was free. We had a
+  production Postgres with every shift, every override, and every timestamp in it, and we ran a
+  qualitative adoption diagnosis on an *assumption* about whether data had been entered — an
+  assumption a single `select count(*)` would have falsified. We only looked at teardown, to
+  check whether it was safe to delete. Everything in "What we actually found" was sitting there
+  for five weeks.
+- **We treated silence as a signal.** Nobody told us they'd started using it, so we concluded
+  they hadn't. Users don't send status reports. Instrumentation exists because absence of news
+  is not information.
 - **We priced against the wrong anchor.** We benchmarked $29 against the incumbent's paid tier
   ($39.99) when the relevant anchor for our own stated beachhead was $0. We had written down the
   correct answer and then ignored it.
@@ -120,33 +164,40 @@ for whom your entire product is a loss leader.
 
 - **We shipped.** A real deployed product with auth, persistence, and a non-trivial rules
   engine, in weeks. The engineering thesis held.
-- **We ran the failure as a diagnosis, not a feature gap.** The reflex when a pilot stalls is
-  to add features. Writing down five falsifiable hypotheses first, and holding the honest row —
+- **We ran the stall as a diagnosis, not a feature gap.** The reflex when a pilot stalls is to
+  add features. Writing down five falsifiable hypotheses first, and holding the honest row —
   *"if they can't articulate why they didn't adopt a free, already-built, purpose-made tool,
   that is a segment finding, not a product finding"* — is what let the market answer surface
-  instead of getting buried under a sprint.
-- **We killed it cleanly.** Nothing is half-running. The hosted app and its database are torn
-  down, the repo is archived and opened, and the reasoning is written down where it can be
-  reused.
+  instead of getting buried under a sprint. The hypotheses were all wrong, but having written
+  them down is why we noticed that.
+- **We checked the database before deleting it.** A small thing that turned out to matter: the
+  export done as a pre-deletion safety step is what corrected this entire document. The
+  shutdown reasoning survived; the narrative around it did not.
 - **The domain layer stayed pure**, which is why it's still readable as a portfolio artifact
   rather than a tangle of React and database calls.
 
 ## Transferable lessons
 
-1. **Check the market leader's free tier against your target customer's size before writing
+1. **Read your own production data before you interview anybody.** Qualitative research is for
+   explaining behaviour you've already measured, not for guessing at behaviour you could have
+   queried. We inverted that and spent a diagnosis session on a premise that was false.
+2. **Measure whether anyone uses the feature you're charging for.** Not whether they like it,
+   not whether it demos well — whether it appears in their data. Ours appeared twice.
+3. **Check the market leader's free tier against your target customer's size before writing
    code.** If free covers your beachhead, your price is zero and you need a different beachhead
    or a different product.
-2. **Ask who monetizes your product indirectly.** If a competitor treats your whole product as
+4. **Ask who monetizes your product indirectly.** If a competitor treats your whole product as
    an acquisition wedge, you are not in a feature fight, you are in a business-model fight, and
    features won't settle it.
-3. **When your own research names the real alternative, price against *that*.** Ours said
+5. **When your own research names the real alternative, price against *that*.** Ours said
    "spreadsheet and group texts." A spreadsheet costs nothing.
-4. **A design partner's adoption failure is data, and a related party's is the loudest data
-   you will get.** Highest possible motivation is a ceiling, not a baseline. If it doesn't work
-   there, it will not work with a stranger.
-5. **Compliance automation can be an anti-feature.** For small operators, a tool that documents
+6. **A related party's usage is a ceiling, not a baseline.** Highest possible motivation, a
+   product built to their own workflow, a co-owner on the floor — and it still churned in two
+   weeks. What a design partner does is the best case, not the expected case. Read their
+   *churn* as the loud signal, not their trial.
+7. **Compliance automation can be an anti-feature.** For small operators, a tool that documents
    violations creates liability where none was written down. Sell the outcome, not the audit.
-6. **Distinguish the two yeses.** A design partner's yes proves the workflow. Only an
+8. **Distinguish the two yeses.** A design partner's yes proves the workflow. Only an
    arm's-length customer's invoice proves the business. We never got the second one, and we
    should have gone looking for it before building the first.
 

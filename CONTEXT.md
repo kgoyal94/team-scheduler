@@ -28,13 +28,17 @@ possible is documented in `CLAUDE.md`.
 ## Final status
 - **Shipped and verified live 2026-07-17** — magic-link auth → server-side email allowlist →
   first-login bootstrap → Postgres persistence, all confirmed working in production.
-- **Ran as a private beta for ~5 weeks** with one real independent restaurant.
+- **Ran as a private beta** with one real independent restaurant.
 - **Revenue: $0.** List price was set at $29/location/month; no customer was ever billed.
-- **Adoption: zero.** The design partner never entered their real staff data. The diagnosis
-  that followed is the post-mortem.
+- **Adoption: real but brief.** Contrary to what we believed at the time, the design partner
+  *did* adopt it — real roster entered, 141 shifts across 7 weeks built in four sessions
+  between 2026-08-08 and 2026-08-23, scheduling up to two weeks ahead. Then use stopped dead
+  and never resumed. Discovered only at teardown, from the production DB export.
+- **The differentiator went unused:** 2 training/certification shifts out of 141.
 - **Shut down 2026-09-14.** Cause was a market finding, not a product defect: the category
   leader gives single-location scheduling away free above our entire target segment's size,
-  so willingness to pay was ~$0.
+  so willingness to pay was ~$0. The adoption discovery sharpened this rather than changing
+  it — they used the free-commodity half and ignored the half we priced.
 
 ## What shipped
 - Week + month schedule board with drag-to-move shifts
@@ -56,11 +60,11 @@ multi-tenancy · any iOS client.
 ## Teardown record (2026-09-14)
 | Resource | Disposition |
 |---|---|
-| Supabase project | **Deleted.** Database, schema, and auth users destroyed. |
-| Vercel project | **Deleted.** |
-| `shiftlift.app` domain | **Removed from Vercel.** Registration is third-party and expires on its own. |
-| GitHub repo | **Public + archived**, kept as a portfolio artifact. |
-| Interactive demo | `docs/index.html`, served via GitHub Pages. No backend. |
+| GitHub repo | **Public.** Kept as a portfolio artifact. |
+| Interactive demo | `docs/index.html`, served via GitHub Pages. No backend, no data. |
+| Production data | **Exported and preserved privately** before any teardown (real staff names — never published). |
+| Supabase project | **Pending founder decision.** Still running; Pro-tier projects cannot be paused, so the choice is delete or keep. |
+| Vercel project + `shiftlift.app` | **Pending** — held until the Supabase call is made. Domain registration is third-party and expires on its own. |
 
-The app can no longer run against a live backend without provisioning a new Supabase project
-and applying `supabase/migrations/`.
+Nothing in this repository contains customer data: the demo runs on fictional staff and the
+seeded demo set, and the real roster was never committed.

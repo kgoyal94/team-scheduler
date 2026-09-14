@@ -6,8 +6,8 @@ Built, shipped to production, run as a private beta with a real restaurant — a
 down deliberately when the pricing floor turned out to be zero. The code, the strategy, and
 the post-mortem are all here.
 
-> **Status: archived (September 2026).** No longer running. The hosted app and its database
-> have been torn down; the interactive demo below needs no backend.
+> **Status: archived (September 2026).** No longer developed, no longer sold. The interactive
+> demo below runs entirely client-side and needs no backend.
 
 ### ▶ [Try the interactive demo](https://kgoyal94.github.io/team-scheduler/)
 
@@ -107,9 +107,19 @@ This is the part worth reading.
 
 ShiftLift reached production and ran as a private beta with a real independent restaurant —
 where our design partner both co-owns this project and works on the floor. The highest-motivation
-customer the product would ever get. **They never entered their real data.**
+customer the product would ever get.
 
-The diagnosis that followed found the actual reason, and it wasn't the product:
+**It was used, genuinely, for about two weeks — and then use stopped and nobody ever paid.**
+Pulling the production database at teardown showed the real staff roster entered in place of the
+demo data, and 141 shifts covering seven weeks, built across four working sessions between
+August 8 and August 23 — including schedules set two weeks into the future. Rule overrides,
+time-off, and availability blocks all got used. Then it went quiet, three weeks before shutdown.
+
+One number in that export matters more than the rest. **The certification engine — the
+differentiator, and the entire justification for charging anything — was used twice in 141
+shifts.** What got used was ordinary scheduling. What we were selling sat untouched.
+
+Three findings, in increasing order of how much they mattered:
 
 1. **They already had a scheduler** — an incumbent tool, already paid for, already set up.
 2. **They didn't use that either.** A scheduler that validates against labor rules creates a
@@ -128,8 +138,8 @@ adjacent product to upsell into.
 Two things we got right, and one we got wrong:
 
 - **Right:** we shipped a real, working, deployed product in weeks instead of months.
-- **Right:** we ran the adoption failure as a diagnosis instead of assuming we needed more
-  features. The finding was a *market* finding, and more features would have buried it.
+- **Right:** we ran the stall as a diagnosis instead of assuming we needed more features. The
+  finding was a *market* finding, and more features would have buried it.
 - **Wrong:** we benchmarked pricing against the incumbent's paid tier when our own competitive
   analysis had already written down that the real default was "Google Sheets and group texts."
   We wrote down the right answer and then priced against the wrong anchor. A single "what does
